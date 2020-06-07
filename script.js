@@ -1,10 +1,18 @@
+var record_animation = false;
+var name = "image_"
+var total_frames = 400;
+var frame = 0;
+var loop = 0;
+var total_time = 2*Math.PI;
+var rate = total_time/total_frames;
+
 var a = 0;
 var phase_speed = 0.25;
 
 var t = 0;
 const t_rate = .003;
 
-const fps = 60;
+const fps = 30;
 var stop_animation = false;
 var fpsInterval, startTime, now, then, elapsed;
 
@@ -25,8 +33,8 @@ startAnimating(fps);
 
 function draw() {
 
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
+    W = canvas.width = 300; //window.innerWidth;
+    H = canvas.height = 300; //window.innerHeight;
 
     ctx.fillStyle = 'rgba(0,0,0,1)';
     ctx.fillRect(0, 0, W, H);
@@ -45,9 +53,9 @@ function draw() {
     ctx.rect(W/2-500, H/2-250, 1000, 500);
     ctx.stroke();
 
-    t += t_rate;
+    //t += t_rate;
 
-    a = (.5*phase_speed*t)%Math.PI;
+    a = (.5*phase_speed*1*Math.cos(t))%Math.PI;
   
 }
 
@@ -75,8 +83,35 @@ function startAnimating(fps) {
      if (elapsed > fpsInterval) {
         then = now - (elapsed % fpsInterval);
      
-        draw();    
-     }
+        draw(); 
+        
+        frame = (frame+1)%total_frames;
+        time = rate*frame;
+        t = time;
+
+        if(record_animation) {
+
+            if (loop === 1) { 
+            let frame_number = frame.toString().padStart(total_frames.toString().length, '0');
+            let filename = name+frame_number+'.png'
+                
+            dataURL = canvas.toDataURL();
+            var element = document.createElement('a');
+            element.setAttribute('href', dataURL);
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            }
+
+            if (frame + 1 === total_frames) {
+                loop += 1;
+            }
+
+            if (loop === 2) { stop_animation = true }
+        }
+    }
 
     if (stop_animation) {
         return;
