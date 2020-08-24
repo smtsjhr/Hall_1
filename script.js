@@ -1,15 +1,20 @@
-var a = 0;
+var a = .5
 var phase_speed = 0.25;
 
 var t = 0;
-const t_rate = .003;
+var t_rate = .01;
 
-const fps = 60;
+var loop_duration = 4;
+var fps = 50;
+var t_max = 2*Math.PI;
+var total_frames = fps*loop_duration;
+t_rate = t_max/total_frames;
+
 var stop_animation = false;
 var fpsInterval, startTime, now, then, elapsed;
 
 
-var interaction_variables = [phase_speed];
+var interaction_variables = [phase_speed, a];
 
 const enable_interaction = true;
 var get_mouse_pos = false;
@@ -35,7 +40,7 @@ function draw() {
         k = (1.015)**(i);
         d = 50*k;
         ctx.fillStyle = `rgba(${w=i%2*255},${w},${w},${1})`;
-        ctx.fillRect(W/2+30*Math.sin(i*(.6+.5*Math.sin(a))+1*t)*k-d/2, H/2-d/2, d, d)
+        ctx.fillRect(W/2+30*Math.sin(i*a+1*t)*k-d/2, H/2-d/2, d, d)
     }
     ctx.fillStyle = 'rgba(255,255,255,1)'
     ctx.fillRect(W/2-50, H/2-50/2, 100, 50);
@@ -47,7 +52,11 @@ function draw() {
 
     t += t_rate;
 
-    a = (.5*phase_speed*t)%Math.PI;
+    //a = (.5*phase_speed*t)%Math.PI;
+
+    //a = 1.5 + .0*Math.sin(t)
+
+    //console.log(a)
   
 }
 
@@ -135,6 +144,9 @@ function interaction(canvas, event, ...interaction_variables) {
     y_center = mouse_y - 0.5;
 
     phase_speed = 2*Math.abs(y_center);
+
+    a = 2*Math.PI*mouse_y
+    //console.log(a);
 
 }
 
